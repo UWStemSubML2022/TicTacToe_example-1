@@ -1,6 +1,23 @@
 import numpy as np
 import random
 
+def computer_random(board):
+    empties = np.where(board == " ")
+    
+    print(empties)
+
+    new_empties = 3*empties[0]+ empties[1]
+
+    print(new_empties)
+
+    move = random.choice(new_empties)
+
+    return move
+
+
+
+
+
 
 def print_board(board_array):
     print("Printing board")
@@ -28,15 +45,19 @@ def init_board():
     return board
 
 
-def take_turn(current_character, board):
+def take_turn(player, current_character, board):
     print("Starting turn")
 
-    # placeholder
-    move = input(current_character + " what is your move?")
+    if player == "h":
 
-    # check if the move is valid
-    while not valid_move(int(move), board):
-        move = input("That is not a valid move. Try again:")
+    # placeholder
+        move = input(current_character + " what is your move?")
+
+        # check if the move is valid
+        while not valid_move(int(move), board):
+            move = input("That is not a valid move. Try again:")
+    elif player == "c":
+        move = computer_random(board)
 
     # update board
     update_board(current_character, int(move), board)
@@ -128,12 +149,13 @@ def check_diagonals(board):
 
 
 def switch_player(character):
-    print("Switching player")
+    print("Switching player from ", character)
     if character == 'X':
         character = 'O'
     else:
         character = 'X'
 
+    print("returning ", character)
     return character
 
 
@@ -151,24 +173,32 @@ def play_game():
     # initialize the board
     board = init_board()
 
+    print(computer_random(board))
+
+
+    player_type = ["c", "h"]
+
+
     # keep track of if the game has been won
     win = False
 
     # determine how the game will be started
-    player = determine_start()
+    character = determine_start()
 
-    print("Player " + player + " will start the game")
+    print("Player " + player_type[0] + character + " will start the game")
 
     # while the game has not been won stay inside of a loop
     while not win:
         # take turns
-        take_turn(player, board)
+        take_turn(player_type[0],character, board)
 
         # print the board after each turn
         print_board(board)
 
+        exit()
+
         # check if the  game has been won after each turn
-        if check_win(player, board):
+        if check_win(character, board):
             # if the game has been won, ask if they would like to play again
             again = input("Would you like to play again? [Y/N]")
 
@@ -188,7 +218,9 @@ def play_game():
                 exit(0)
 
         # swap which players turn it is at the end of each turn
-        player = switch_player(player)
+        character = switch_player(character)
+        
+        player_type = player_type[::-1]
         
         
 
